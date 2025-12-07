@@ -15,4 +15,5 @@ README / Run & Safety instructions
 
 7. # add only to test
 7. # add only to test
+8. # add to test
 #making a change for step 1.3 
