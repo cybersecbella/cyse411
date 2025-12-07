@@ -23,7 +23,7 @@ jobs:
           npm install
 
       - name: Start vulnerable app
-        working-directory: fastbank-insecure-classwork/backend
+        working-directory: fastbank_insecure_classwork/backend
         run: |
           npm start &
           #-wait for the server to boot
