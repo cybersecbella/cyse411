@@ -15,8 +15,17 @@ app.use(
   })
 );
 
+//added this the next 5 lines for CSRF
+const app = require("express")(),
+  cookieParser = require("cookie-parser"),
+  bodyParser = require("body-parser"),
+  session = require("express-session"),   
+  csrf = require('lusca').csrf;
+
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use(session({ secret: process.env['SECRET'], cookie: { maxAge: 60000 } }));  //added this 
+app.use(csrf());   //added this against CSRF
 
 // --- IN-MEMORY SQLITE DB (clean) ---
 const db = new sqlite3.Database(":memory:");
