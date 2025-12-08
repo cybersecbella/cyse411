@@ -100,9 +100,10 @@ app.use(limiter);
 
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
-
+  username = SqlString.escape(username);
+  password = SqlString.escape(password);
   const sql = `SELECT id, username, password_hash FROM users WHERE username = '${username}'`;
-
+  
   db.get(sql, (err, user) => {
     if (!user) return res.status(404).json({ error: "Unknown username" });
 
