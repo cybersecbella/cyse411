@@ -150,6 +150,7 @@ app.get("/transactions", auth, (req, res) => {
 // ------------------------------------------------------------
 app.post("/feedback", auth, (req, res) => {
   const comment = req.body.comment;
+  comment = SqlString.escape(comment);
   const userId = req.user.id;
 
   db.get(`SELECT username FROM users WHERE id = ${userId}`, (err, row) => {
