@@ -65,9 +65,9 @@ app.post('/read-no-validate', (req, res) => {
   
   const filename = req.body.filename || '';
   const joined = path.join(BASE_DIR, filename); // intentionally vulnerable
-  if (!fs.existsSync(joined)) return res.status(404).json({ error: 'File not found', path: joined });
-  joined = fs.realpathSync(path.resolve(ROOT, joined));
-  if (!joined.startsWith(ROOT)) {
+  if (!fs.existsSync(joined)) return res.status(404).json({ error: 'File not found', path: joined }); //checking file exists 
+  joined = fs.realpathSync(path.resolve(ROOT, joined)); //does the path start with root?
+    if (!joined.startsWith(ROOT)) {
     res.statusCode = 403;
     res.end();
     return;
