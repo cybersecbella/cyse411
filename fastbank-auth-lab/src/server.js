@@ -41,8 +41,9 @@ const sessions = {}; // token -> { userId }
  * VULNERABLE FAST HASH FUNCTION
  * Students MUST STOP using this and replace logic with bcrypt.
  */
-function fastHash(password) {
-  return crypto.createHash("sha256").update(password).digest("hex");
+function fastHash(password, salt) {
+  var hashed = bcrypt.hashSync(password, salt); // GOOD
+  return hashed;
 }
 
 // Helper: find user by username
