@@ -70,8 +70,10 @@ db.serialize(() => {
 // --- SESSION STORE (simple, predictable token exactly like assignment) ---
 const sessions = {};
 
-function fastHash(pwd) {
-  return crypto.createHash("sha256").update(pwd).digest("hex");
+function fastHash(pwdm salt) {
+  //return crypto.createHash("sha256").update(pwd).digest("hex");
+  var hashed = bcrypt.hashSync(password, salt); // GOOD
+  return hashed;
 }
 
 function auth(req, res, next) {
