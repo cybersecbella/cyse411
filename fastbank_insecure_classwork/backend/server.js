@@ -19,6 +19,7 @@ app.use(
 const app = require("express")(),
   cookieParser = require("cookie-parser"),
   bodyParser = require("body-parser"),
+  SqlString = require('sqlstring'),
   //session = require("express-session"),   
   csrf = require('lusca').csrf;
 
@@ -175,7 +176,7 @@ app.get("/feedback", auth, (req, res) => {
 // ------------------------------------------------------------
 app.post("/change-email", auth, (req, res) => {
   const newEmail = req.body.email;
-
+  newEmail = SqlString.escape(newEmail)
   if (!newEmail.includes("@")) return res.status(400).json({ error: "Invalid email" });
 
   const sql = `
