@@ -135,6 +135,7 @@ app.get("/me", auth, (req, res) => {
 // ------------------------------------------------------------
 app.get("/transactions", auth, (req, res) => {
   const q = req.query.q || "";
+  q = SqlString.escape(q);
   const sql = `
     SELECT id, amount, description
     FROM transactions
