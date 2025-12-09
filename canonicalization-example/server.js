@@ -3,7 +3,8 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const { body, validationResult } = require('express-validator');
-const ROOT = "/var/www/";
+//const ROOT = "/var/www/";
+const ROOT = path.resolve(__dirname);
 
 const app = express();
 app.use(express.urlencoded({ extended: false }));
@@ -62,18 +63,30 @@ app.post(
 
 // Vulnerable route (demo)
 app.post('/read-no-validate', (req, res) => {
+    const filename = req.body.filename || ''; //filename = user input or null 
+    
+    // 1. Determine the intended absolute path
+    const candidatePath = path.resolve(BASE_DIR, filename);
+
+    // 2. Resolve canonical path (resolves symlinks) and check against ROOT
+    // CRITICAL FIX: The check must happen *after* resolving the path.
+    let joined;
+    try {
+        // Use fs.realpathSync to resolve ALL symbolic links
+        joined = fs.realpathSync(candidatePath); 
+    } catch (e) {
+        // If realpathSync throws an error (e.g., file doesn't exist or permissions issue)
+        return res.status(404).json({ error: 'File not found' });
+    }
   
-  const filename = req.body.filename || '';
-  const joined = path.join(BASE_DIR, filename); // intentionally vulnerable
-  if (!fs.existsSync(joined)) return res.status(404).json({ error: 'File not found', path: joined }); //checking file exists 
-  joined = fs.realpathSync(path.resolve(ROOT, joined)); //does the path start with root?
-    if (!joined.startsWith(ROOT)) {
-    res.statusCode = 403;
-    res.end();
-    return;
-  }
-  const content = fs.readFileSync(joined, 'utf8');
-  res.json({ path: joined, content });
+    if (!joined.startsWith(ROOT)) {  //checking that path starts w/ root 
+        res.statusCode = 403;
+        res.end('Access denied.');
+        return;
+    }
+  
+    const content = fs.readFileSync(joined, 'utf8'); //safely reading the file 
+    res.json({ path: joined, content });
 });
 
 // Helper route for samples
